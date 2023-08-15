@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+// ./src/App.js
+
+import React from "react";
+import {GetArticles} from "./queries/get-articles";
+import {useQuery} from "@apollo/client";
+
+// Import Link to enable links in the HTML
+import {Link} from "react-router-dom";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const {loading, error, data} = useQuery(GetArticles);
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error :(</p>;
+
+    const articles = data.Articles.items;
+
+    return (
+        <div>
+            <h1>My blog site</h1>
+            <ul>
+                {articles.map((article) => (
+                    <li key={article._id}>
+
+                        {/* Add links to the article title */}
+                        <Link to={article._slug}>{article.title}</Link>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 }
 
 export default App;
